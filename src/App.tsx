@@ -11,6 +11,45 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return currentUser ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
+function SectionPlaceholder({ title, description }: { title: string; description: string }) {
+  return (
+    <ProtectedRoute>
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#EEEDFE',
+        padding: '24px',
+        fontFamily: 'Plus Jakarta Sans, sans-serif',
+      }}>
+        <div style={{
+          maxWidth: '480px',
+          width: '100%',
+          background: 'white',
+          borderRadius: '20px',
+          padding: '28px',
+          border: '1px solid #EDE9FE',
+          boxShadow: '0 16px 40px rgba(38, 33, 92, 0.08)',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '28px', fontWeight: '700', color: '#26215C', marginBottom: '8px' }}>
+            {title}
+          </div>
+          <div style={{ fontSize: '14px', color: '#888780', lineHeight: 1.6 }}>
+            {description}
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
+  );
+}
+
+function AppRedirect() {
+  const { currentUser } = useAuth();
+  return <Navigate to={currentUser ? '/dashboard' : '/login'} replace />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -28,7 +67,13 @@ function App() {
               <Dashboard />
             </ProtectedRoute>
           } />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/quest" element={<SectionPlaceholder title="Daily Quest" description="Halaman ini sedang disiapkan." />} />
+          <Route path="/mock" element={<SectionPlaceholder title="Mock Test" description="Halaman ini sedang disiapkan." />} />
+          <Route path="/leaderboard" element={<SectionPlaceholder title="Leaderboard" description="Halaman ini sedang disiapkan." />} />
+          <Route path="/stats" element={<SectionPlaceholder title="Statistik" description="Halaman ini sedang disiapkan." />} />
+          <Route path="/profile" element={<SectionPlaceholder title="Profil" description="Halaman ini sedang disiapkan." />} />
+          <Route path="/settings" element={<SectionPlaceholder title="Pengaturan" description="Halaman ini sedang disiapkan." />} />
+          <Route path="*" element={<AppRedirect />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
