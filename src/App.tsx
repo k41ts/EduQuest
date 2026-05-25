@@ -5,13 +5,21 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
+import Quest from './pages/Quest';
+import QuestResults from './pages/QuestResults';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { currentUser } = useAuth();
   return currentUser ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
-function SectionPlaceholder({ title, description }: { title: string; description: string }) {
+function SectionPlaceholder({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
     <ProtectedRoute>
       <div style={{
@@ -57,22 +65,51 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route path="/onboarding" element={
             <ProtectedRoute>
               <Onboarding />
             </ProtectedRoute>
           } />
+
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           } />
-          <Route path="/quest" element={<SectionPlaceholder title="Daily Quest" description="Halaman ini sedang disiapkan." />} />
-          <Route path="/mock" element={<SectionPlaceholder title="Mock Test" description="Halaman ini sedang disiapkan." />} />
-          <Route path="/leaderboard" element={<SectionPlaceholder title="Leaderboard" description="Halaman ini sedang disiapkan." />} />
-          <Route path="/stats" element={<SectionPlaceholder title="Statistik" description="Halaman ini sedang disiapkan." />} />
-          <Route path="/profile" element={<SectionPlaceholder title="Profil" description="Halaman ini sedang disiapkan." />} />
-          <Route path="/settings" element={<SectionPlaceholder title="Pengaturan" description="Halaman ini sedang disiapkan." />} />
+
+          <Route path="/quest" element={
+            <ProtectedRoute>
+              <Quest />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/quest/results" element={
+            <ProtectedRoute>
+              <QuestResults />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/mock" element={
+            <SectionPlaceholder title="Mock Test" description="Halaman ini sedang disiapkan." />
+          } />
+
+          <Route path="/leaderboard" element={
+            <SectionPlaceholder title="Leaderboard" description="Halaman ini sedang disiapkan." />
+          } />
+
+          <Route path="/stats" element={
+            <SectionPlaceholder title="Statistik" description="Halaman ini sedang disiapkan." />
+          } />
+
+          <Route path="/profile" element={
+            <SectionPlaceholder title="Profil" description="Halaman ini sedang disiapkan." />
+          } />
+
+          <Route path="/settings" element={
+            <SectionPlaceholder title="Pengaturan" description="Halaman ini sedang disiapkan." />
+          } />
+
           <Route path="*" element={<AppRedirect />} />
         </Routes>
       </AuthProvider>
