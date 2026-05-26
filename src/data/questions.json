@@ -1,0 +1,168 @@
+{
+  "questions": [
+    {
+      "id": "tps-001",
+      "subject": "TPS",
+      "difficulty": "easy",
+      "text": "Dokter : Rumah Sakit = Guru : ?",
+      "options": ["Kantor", "Sekolah", "Perpustakaan", "Laboratorium"],
+      "correctIndex": 1,
+      "explanation": "Dokter bekerja di Rumah Sakit, sama seperti Guru bekerja di Sekolah. Keduanya adalah tempat profesi tersebut menjalankan tugasnya."
+    },
+    {
+      "id": "tps-002",
+      "subject": "TPS",
+      "difficulty": "medium",
+      "text": "Jika semua A adalah B, dan semua B adalah C, maka...",
+      "options": ["Semua C adalah A", "Semua A adalah C", "Semua B adalah A", "Tidak dapat disimpulkan"],
+      "correctIndex": 1,
+      "explanation": "Dari premis 'semua A adalah B' dan 'semua B adalah C', dapat disimpulkan secara transitif bahwa semua A adalah C."
+    },
+    {
+      "id": "tps-003",
+      "subject": "TPS",
+      "difficulty": "medium",
+      "text": "Lanjutkan pola berikut: 2, 6, 12, 20, 30, ...",
+      "options": ["38", "40", "42", "44"],
+      "correctIndex": 2,
+      "explanation": "Selisih antar suku: 4, 6, 8, 10, 12. Polanya naik 2 setiap kali, sehingga suku berikutnya = 30 + 12 = 42."
+    },
+    {
+      "id": "tps-004",
+      "subject": "TPS",
+      "difficulty": "hard",
+      "text": "Lima orang duduk berjajar: A, B, C, D, E. A duduk di sebelah kiri B. C duduk di antara D dan E. B duduk di ujung kanan. Siapa yang duduk di posisi tengah?",
+      "options": ["A", "C", "D", "E"],
+      "correctIndex": 1,
+      "explanation": "B di ujung kanan (posisi 5), A di sebelah kiri B (posisi 4). C di antara D dan E, sehingga susunannya: D-C-E atau E-C-D di posisi 1-2-3. Posisi 3 (tengah) adalah C."
+    },
+    {
+      "id": "tps-005",
+      "subject": "TPS",
+      "difficulty": "easy",
+      "text": "Kata yang BERLAWANAN makna dengan 'BOROS' adalah...",
+      "options": ["Kaya", "Hemat", "Miskin", "Kikir"],
+      "correctIndex": 1,
+      "explanation": "Lawan kata boros adalah hemat. Boros berarti menggunakan sesuatu secara berlebihan, sedangkan hemat berarti menggunakan secukupnya."
+    },
+    {
+      "id": "lit-001",
+      "subject": "Literasi",
+      "difficulty": "easy",
+      "text": "Bacalah kalimat berikut: 'Meski hujan deras, para petani tetap bekerja di sawah dengan penuh semangat.' Apa gagasan utama kalimat tersebut?",
+      "options": [
+        "Hujan deras mengganggu pekerjaan petani",
+        "Petani bekerja keras meski dalam kondisi hujan",
+        "Sawah membutuhkan banyak air untuk tumbuh",
+        "Para petani tidak takut hujan"
+      ],
+      "correctIndex": 1,
+      "explanation": "Gagasan utama kalimat adalah ketekunan petani yang tetap bekerja meskipun hujan deras. Kata kunci 'meski' menunjukkan kontras antara kondisi dan sikap petani."
+    },
+    {
+      "id": "lit-002",
+      "subject": "Literasi",
+      "difficulty": "medium",
+      "text": "Pilih kalimat yang TIDAK mengandung kesalahan ejaan:",
+      "options": [
+        "Dia pergi ke-Jakarta kemarin.",
+        "Mereka mendiskusikan hal tersebut.",
+        "Tolong di bawa kesini bukunya.",
+        "Kami meng-koordinasikan acara itu."
+      ],
+      "correctIndex": 1,
+      "explanation": "'Mendiskusikan' sudah benar. 'Ke-Jakarta' seharusnya 'ke Jakarta' (preposisi), 'di bawa kesini' seharusnya 'dibawa ke sini', dan 'meng-koordinasikan' seharusnya 'mengkoordinasikan'."
+    },
+    {
+      "id": "lit-003",
+      "subject": "Literasi",
+      "difficulty": "medium",
+      "text": "Kata 'ambigu' dalam kalimat 'Pernyataan itu bersifat ambigu sehingga membingungkan' memiliki arti...",
+      "options": ["Jelas dan tegas", "Memiliki dua makna atau lebih", "Tidak relevan", "Sangat penting"],
+      "correctIndex": 1,
+      "explanation": "Ambigu berarti mempunyai makna lebih dari satu sehingga dapat menimbulkan keraguan, ketidakjelasan, atau kebingungan."
+    },
+    {
+      "id": "lit-004",
+      "subject": "Literasi",
+      "difficulty": "hard",
+      "text": "Bacaan: 'Digitalisasi membawa peluang sekaligus ancaman. Di satu sisi, efisiensi meningkat drastis. Di sisi lain, banyak pekerjaan konvensional tergantikan.' Penulis bersikap...",
+      "options": [
+        "Mendukung penuh digitalisasi",
+        "Menolak digitalisasi",
+        "Netral dengan menyajikan dua sisi",
+        "Khawatir terhadap teknologi"
+      ],
+      "correctIndex": 2,
+      "explanation": "Frasa 'di satu sisi... di sisi lain' menunjukkan penulis menyajikan dua perspektif secara berimbang tanpa berpihak, sehingga sikapnya netral."
+    },
+    {
+      "id": "lit-005",
+      "subject": "Literasi",
+      "difficulty": "easy",
+      "text": "Kalimat manakah yang menggunakan tanda baca dengan BENAR?",
+      "options": [
+        "Ibu membeli: apel, jeruk dan mangga.",
+        "Ibu membeli apel, jeruk, dan mangga.",
+        "Ibu membeli apel jeruk dan mangga.",
+        "Ibu membeli, apel, jeruk, dan mangga."
+      ],
+      "correctIndex": 1,
+      "explanation": "Kalimat kedua benar karena menggunakan koma di antara unsur-unsur rincian dan sebelum 'dan' pada unsur terakhir (Oxford comma dalam bahasa Indonesia)."
+    },
+    {
+      "id": "mat-001",
+      "subject": "Matematika",
+      "difficulty": "easy",
+      "text": "Jika f(x) = 2x² - 3x + 1, maka nilai f(2) adalah...",
+      "options": ["3", "5", "7", "9"],
+      "correctIndex": 0,
+      "explanation": "f(2) = 2(2)² - 3(2) + 1 = 2(4) - 6 + 1 = 8 - 6 + 1 = 3."
+    },
+    {
+      "id": "mat-002",
+      "subject": "Matematika",
+      "difficulty": "medium",
+      "text": "Sebuah data memiliki nilai: 4, 7, 7, 8, 9, 10. Nilai median data tersebut adalah...",
+      "options": ["7", "7.5", "8", "8.5"],
+      "correctIndex": 1,
+      "explanation": "Data sudah terurut: 4, 7, 7, 8, 9, 10. Jumlah data genap (6), median = rata-rata data ke-3 dan ke-4 = (7 + 8) / 2 = 7,5."
+    },
+    {
+      "id": "mat-003",
+      "subject": "Matematika",
+      "difficulty": "medium",
+      "text": "Peluang munculnya angka genap saat melempar dadu adalah...",
+      "options": ["1/6", "1/3", "1/2", "2/3"],
+      "correctIndex": 2,
+      "explanation": "Angka genap pada dadu: {2, 4, 6} = 3 kemungkinan. Total ruang sampel = 6. Peluang = 3/6 = 1/2."
+    },
+    {
+      "id": "mat-004",
+      "subject": "Matematika",
+      "difficulty": "hard",
+      "text": "Persamaan kuadrat x² - 5x + 6 = 0 memiliki akar-akar x₁ dan x₂. Nilai x₁² + x₂² adalah...",
+      "options": ["13", "25", "37", "61"],
+      "correctIndex": 0,
+      "explanation": "Dari Vieta: x₁ + x₂ = 5, x₁·x₂ = 6. Maka x₁² + x₂² = (x₁ + x₂)² - 2x₁x₂ = 25 - 12 = 13."
+    },
+    {
+      "id": "mat-005",
+      "subject": "Matematika",
+      "difficulty": "easy",
+      "text": "Sebuah persegi panjang memiliki panjang 12 cm dan lebar 8 cm. Luas persegi panjang tersebut adalah...",
+      "options": ["40 cm²", "80 cm²", "96 cm²", "120 cm²"],
+      "correctIndex": 2,
+      "explanation": "Luas persegi panjang = panjang × lebar = 12 × 8 = 96 cm²."
+    },
+    {
+      "id": "mat-006",
+      "subject": "Matematika",
+      "difficulty": "hard",
+      "text": "Jika log₂(x) + log₂(x-2) = 3, maka nilai x adalah...",
+      "options": ["2", "4", "6", "8"],
+      "correctIndex": 1,
+      "explanation": "log₂(x(x-2)) = 3 → x(x-2) = 8 → x² - 2x - 8 = 0 → (x-4)(x+2) = 0. Karena x > 2, maka x = 4."
+    }
+  ]
+}
