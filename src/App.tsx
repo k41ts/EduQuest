@@ -7,6 +7,10 @@ import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Quest from './pages/Quest';
 import QuestResults from './pages/QuestResults';
+import Seed from './pages/seed';
+import Mock from './pages/Mock';
+import MockSession from './pages/MockSession';
+import MockResults from './pages/MockResults';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { currentUser } = useAuth();
@@ -71,6 +75,11 @@ function App() {
               <Onboarding />
             </ProtectedRoute>
           } />
+          <Route path="/seed" element={
+            <ProtectedRoute>
+              <Seed />
+            </ProtectedRoute>
+          } />
 
           <Route path="/dashboard" element={
             <ProtectedRoute>
@@ -90,9 +99,9 @@ function App() {
             </ProtectedRoute>
           } />
 
-          <Route path="/mock" element={
-            <SectionPlaceholder title="Mock Test" description="Halaman ini sedang disiapkan." />
-          } />
+          <Route path="/mock" element={<ProtectedRoute><Mock /></ProtectedRoute>} />
+          <Route path="/mock/session" element={<ProtectedRoute><MockSession /></ProtectedRoute>} />
+          <Route path="/mock/results" element={<ProtectedRoute><MockResults /></ProtectedRoute>} />
 
           <Route path="/leaderboard" element={
             <SectionPlaceholder title="Leaderboard" description="Halaman ini sedang disiapkan." />
