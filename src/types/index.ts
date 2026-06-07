@@ -10,6 +10,7 @@ export interface UserProfile {
   subjects: string[];
   onboardingComplete: boolean;
   createdAt: string;
+  badges: string[];
 }
 
 export interface Question {

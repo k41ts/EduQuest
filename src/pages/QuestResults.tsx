@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { doc, updateDoc, addDoc, collection } from 'firebase/firestore';
+import { doc, updateDoc, addDoc, collection, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import type { Question } from '../types';
-import { calculateStreak, calculateLevel } from '../utils/questUtils';
-import { Zap, RotateCcw, LayoutDashboard, Flame, Check, X } from 'lucide-react';
+import { calculateStreak, calculateLevel, getNewlyEarnedBadges, BADGE_DEFINITIONS } from '../utils/questUtils';
+import { updateQuestStats } from '../utils/statsUtils';
+import { Zap, RotateCcw, LayoutDashboard, Flame, Check, X, Trophy } from 'lucide-react';
 
 interface ResultState {
   questions: Question[];
@@ -17,54 +18,74 @@ export default function QuestResults() {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, userProfile, refreshProfile } = useAuth();
-  const [saved, setSaved] = useState(false);
+  const savedRef = useRef(false);
+  const [newBadges, setNewBadges] = useState<string[]>([]);
 
   const state = location.state as ResultState | null;
 
   useEffect(() => {
-    if (!state || !currentUser || !userProfile || saved) return;
-    setSaved(true);
-    saveResults();
-  }, [state, currentUser, userProfile]);
+    if (!state) navigate('/dashboard', { replace: true });
+  }, [navigate, state]);
 
-  async function saveResults() {
-    if (!state || !currentUser || !userProfile) return;
+  useEffect(() => {
+    if (!state || !currentUser || !userProfile || savedRef.current) return;
+    savedRef.current = true;
 
-    const today = new Date().toISOString().split('T')[0];
-    const newStreak = calculateStreak(userProfile.lastActiveDate, userProfile.streak);
-    const newXp = userProfile.xp + state.xpEarned;
-    const newLevel = calculateLevel(newXp);
+    async function saveResults() {
+      if (!state || !currentUser || !userProfile) return;
 
-    const subjectStats: Record<string, { correct: number; total: number }> = {};
-    state.questions.forEach((q, i) => {
-      if (!subjectStats[q.subject]) subjectStats[q.subject] = { correct: 0, total: 0 };
-      subjectStats[q.subject].total++;
-      if (state.answers[i] === q.correctIndex) subjectStats[q.subject].correct++;
-    });
+      const today = new Date().toISOString().split('T')[0];
+      const newStreak = calculateStreak(userProfile.lastActiveDate, userProfile.streak);
+      const newXp = userProfile.xp + state.xpEarned;
+      const newLevel = calculateLevel(newXp);
 
-    try {
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        xp: newXp,
-        level: newLevel,
-        streak: newStreak,
-        lastActiveDate: today,
+      const subjectStats: Record<string, { correct: number; total: number }> = {};
+      state.questions.forEach((q, i) => {
+        if (!subjectStats[q.subject]) subjectStats[q.subject] = { correct: 0, total: 0 };
+        subjectStats[q.subject].total++;
+        if (state.answers[i] === q.correctIndex) subjectStats[q.subject].correct++;
       });
-      await addDoc(collection(db, 'sessions'), {
-        userId: currentUser.uid,
-        completedAt: new Date().toISOString(),
-        xpEarned: state.xpEarned,
-        correctCount: state.questions.filter((q, i) => state.answers[i] === q.correctIndex).length,
-        totalCount: state.questions.length,
-        subjectStats,
-      });
-      await refreshProfile();
-    } catch (err) {
-      console.error(err);
+
+      const currentBadges = userProfile.badges ?? [];
+      const earned = getNewlyEarnedBadges(newXp, newStreak, newLevel, currentBadges);
+
+      try {
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          xp: newXp,
+          level: newLevel,
+          streak: newStreak,
+          lastActiveDate: today,
+          ...(earned.length > 0 && { badges: arrayUnion(...earned) }),
+        });
+        await addDoc(collection(db, 'sessions'), {
+          userId: currentUser.uid,
+          completedAt: new Date().toISOString(),
+          xpEarned: state.xpEarned,
+          correctCount: state.questions.filter((q, i) => state.answers[i] === q.correctIndex).length,
+          totalCount: state.questions.length,
+          subjectStats,
+        });
+        await updateQuestStats({
+          uid: currentUser.uid,
+          profile: userProfile,
+          questions: state.questions,
+          answers: state.answers,
+          xpEarned: state.xpEarned,
+          newXp,
+          newLevel,
+          newStreak,
+        });
+        if (earned.length > 0) setNewBadges(earned);
+        await refreshProfile();
+      } catch (err) {
+        console.error(err);
+      }
     }
-  }
+
+    void saveResults();
+  }, [currentUser, refreshProfile, state, userProfile]);
 
   if (!state) {
-    navigate('/dashboard');
     return null;
   }
 
@@ -152,6 +173,46 @@ export default function QuestResults() {
             </div>
           </div>
         </div>
+
+        {/* New badges toast */}
+        {newBadges.length > 0 && (
+          <div style={{
+            background: 'linear-gradient(135deg, #26215C, #534AB7)',
+            borderRadius: '20px', padding: '20px 24px', marginBottom: '14px',
+          }}>
+            <div style={{ fontSize: '14px', fontWeight: '700', color: 'white', marginBottom: '12px' }}>
+              Badge baru terbuka!
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {newBadges.map(id => {
+                const badge = BADGE_DEFINITIONS.find(b => b.id === id);
+                if (!badge) return null;
+                return (
+                  <div key={id} style={{
+                    background: 'rgba(255,255,255,0.15)', borderRadius: '12px',
+                    padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '12px',
+                  }}>
+                    <div style={{
+                      width: '38px', height: '38px', borderRadius: '10px',
+                      background: '#F0A84B', display: 'flex',
+                      alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      <Trophy size={18} color="white" />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: '700', color: 'white' }}>
+                        {badge.label}
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>
+                        {badge.desc}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Per-subject accuracy */}
         <div style={{
