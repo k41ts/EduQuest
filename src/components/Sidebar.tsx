@@ -22,6 +22,7 @@ const BOTTOM_NAV = [
 
 export default function Sidebar() {
   const { userProfile } = useAuth();
+  const { currentUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -83,9 +84,24 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
-        {NAV.map(item => <NavItem key={item.path} {...item} />)}
-        <div style={{ height: '1px', background: '#EDE9FE', margin: '10px 4px' }} />
-        {BOTTOM_NAV.map(item => <NavItem key={item.path} {...item} />)}
+        {((userProfile && userProfile.role === 'admin') || currentUser?.email === 'admin@eduquest.com') ? (
+          // Admin-only nav
+          <>
+            <div style={{ fontSize: 12, color: '#B4B2A9', padding: '6px 12px' }}>Admin</div>
+            {[
+              { path: '/admin', label: 'Admin Dashboard', icon: LayoutDashboard },
+              { path: '/admin/questions', label: 'Questions', icon: ClipboardList },
+              { path: '/admin/stats', label: 'Statistics', icon: BarChart2 },
+            ].map(item => <NavItem key={item.path} {...item} />)}
+          </>
+        ) : (
+          // Regular user nav
+          <>
+            {NAV.map(item => <NavItem key={item.path} {...item} />)}
+            <div style={{ height: '1px', background: '#EDE9FE', margin: '10px 4px' }} />
+            {BOTTOM_NAV.map(item => <NavItem key={item.path} {...item} />)}
+          </>
+        )}
       </nav>
 
       {/* User + logout */}
