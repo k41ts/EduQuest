@@ -51,6 +51,8 @@ export default function QuestResults() {
       });
       await addDoc(collection(db, 'sessions'), {
         userId: currentUser.uid,
+        userName: userProfile.name,
+        userEmail: userProfile.email,
         completedAt: new Date().toISOString(),
         xpEarned: state.xpEarned,
         correctCount: state.questions.filter((q, i) => state.answers[i] === q.correctIndex).length,
