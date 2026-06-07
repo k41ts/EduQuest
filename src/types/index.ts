@@ -3,6 +3,7 @@ export interface UserProfile {
   name: string;
   email: string;
   level: number;
+  role?: 'admin' | 'user';
   xp: number;
   streak: number;
   lastActiveDate: string;

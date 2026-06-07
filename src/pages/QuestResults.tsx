@@ -49,23 +49,25 @@ export default function QuestResults() {
       const currentBadges = userProfile.badges ?? [];
       const earned = getNewlyEarnedBadges(newXp, newStreak, newLevel, currentBadges);
 
-      try {
-        await updateDoc(doc(db, 'users', currentUser.uid), {
-          xp: newXp,
-          level: newLevel,
-          streak: newStreak,
-          lastActiveDate: today,
-          ...(earned.length > 0 && { badges: arrayUnion(...earned) }),
-        });
-        await addDoc(collection(db, 'sessions'), {
-          userId: currentUser.uid,
-          completedAt: new Date().toISOString(),
-          xpEarned: state.xpEarned,
-          correctCount: state.questions.filter((q, i) => state.answers[i] === q.correctIndex).length,
-          totalCount: state.questions.length,
-          subjectStats,
-        });
-        await updateQuestStats({
+    try {
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        xp: newXp,
+        level: newLevel,
+        streak: newStreak,
+        lastActiveDate: today,
+        ...(earned.length > 0 && { badges: arrayUnion(...earned) }),
+      });
+      await addDoc(collection(db, 'sessions'), {
+        userId: currentUser.uid,
+        userName: userProfile.name,
+        userEmail: userProfile.email,
+        completedAt: new Date().toISOString(),
+        xpEarned: state.xpEarned,
+        correctCount: state.questions.filter((q, i) => state.answers[i] === q.correctIndex).length,
+        totalCount: state.questions.length,
+        subjectStats,
+      });
+      await updateQuestStats({
           uid: currentUser.uid,
           profile: userProfile,
           questions: state.questions,
@@ -76,16 +78,17 @@ export default function QuestResults() {
           newStreak,
         });
         if (earned.length > 0) setNewBadges(earned);
-        await refreshProfile();
-      } catch (err) {
-        console.error(err);
-      }
+      await refreshProfile();
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    void saveResults();
+  void saveResults();
   }, [currentUser, refreshProfile, state, userProfile]);
 
   if (!state) {
+    navigate('/dashboard');
     return null;
   }
 

@@ -203,7 +203,7 @@ export default function Dashboard() {
                 );
               })
             )}
-            <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px' }}>
+            <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px'}}>
               Data akan muncul setelah kamu selesai quest pertama
             </div>
           </div>

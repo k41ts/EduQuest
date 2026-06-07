@@ -17,10 +17,22 @@ import MockResults from './pages/MockResults';
 import Leaderboard from './pages/Leaderboard';
 import Statistics from './pages/Stats';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminQuestions from './pages/AdminQuestions';
+import AdminQuestionCreate from './pages/AdminQuestionCreate';
+import AdminStats from './pages/AdminStats';
+import DevSeedAdmin from './pages/DevSeedAdmin';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { currentUser } = useAuth();
   return currentUser ? <>{children}</> : <Navigate to="/login" replace />;
+}
+
+function AdminRoute({ children }: { children: ReactNode }) {
+  const { currentUser, userProfile } = useAuth();
+  const isAdmin = currentUser?.email === 'admin@eduquest.com' || userProfile?.email === 'admin@eduquest.com' || userProfile?.role === 'admin';
+  if (!currentUser) return <Navigate to="/login" replace />;
+  return isAdmin ? <>{children}</> : <Navigate to="/dashboard" replace />;
 }
 
 function AppRedirect() {
@@ -135,6 +147,34 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/admin" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
+
+          <Route path="/admin/questions" element={
+            <AdminRoute>
+              <AdminQuestions />
+            </AdminRoute>
+          } />
+
+          <Route path="/admin/questions/new" element={
+            <AdminRoute>
+              <AdminQuestionCreate />
+            </AdminRoute>
+          } />
+
+          <Route path="/admin/stats" element={
+            <AdminRoute>
+              <AdminStats />
+            </AdminRoute>
+          } />
+
+          {import.meta.env.DEV && (
+            <Route path="/dev/seed-admin" element={<DevSeedAdmin />} />
+          )}
 
           <Route path="*" element={<AppRedirect />} />
         </Routes>

@@ -827,11 +827,41 @@ export default function Leaderboard() {
             </div>
 
             {currentRankedUser && (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-                gap: '12px',
-              }} className="leaderboard-insights-grid">
+            <div
+              style={{
+                ...cardStyle,
+                padding: '20px',
+                borderRadius: '20px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '14px',
+                }}
+              >
+                <Trophy size={18} color={COLORS.primary} />
+                <span
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: COLORS.ink,
+                  }}
+                >
+                  Statistik Kamu
+                </span>
+              </div>
+
+              <div
+                className="leaderboard-insights-grid"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                  gap: '12px',
+                }}
+              >
                 <MetricPill
                   icon={Star}
                   label="Total XP"
@@ -854,7 +884,8 @@ export default function Leaderboard() {
                   bg={COLORS.primarySoft}
                 />
               </div>
-            )}
+            </div>
+          )}
           </div>
         </section>
 
