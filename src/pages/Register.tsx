@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FirebaseError } from 'firebase/app';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase';
-import type { UserProfile } from '../types';
+import type { User as FirebaseUser } from 'firebase/auth';
+import { auth } from '../firebase';
+import { createDefaultProfile, createInitialUserDocuments } from '../utils/userSetup';
 import { BookOpen, Eye, EyeOff, AlertCircle, Mail, Lock, User } from 'lucide-react';
 
 const ERRORS: Record<string, string> = {
@@ -11,6 +12,16 @@ const ERRORS: Record<string, string> = {
   'auth/invalid-email': 'Format email tidak valid.',
   'auth/weak-password': 'Password minimal 6 karakter ya.',
 };
+
+function getAuthErrorMessage(err: unknown) {
+  if (err instanceof FirebaseError && err.code === 'permission-denied') {
+    return 'Akun Auth sempat dibuat, tapi Firestore menolak bikin profil. Cek Firestore Rules untuk users, userStats, dan userActivity.';
+  }
+
+  return err instanceof FirebaseError
+    ? ERRORS[err.code] ?? 'Terjadi kesalahan. Coba lagi.'
+    : 'Terjadi kesalahan. Coba lagi.';
+}
 
 export default function Register() {
   const navigate = useNavigate();
@@ -45,28 +56,29 @@ export default function Register() {
     }
 
     setLoading(true);
+    let createdUser: FirebaseUser | null = null;
+
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
+      createdUser = cred.user;
       await updateProfile(cred.user, { displayName: name });
 
-      const profile: UserProfile = {
-        uid: cred.user.uid,
-        name,
-        email,
-        level: 1,
-        xp: 0,
-        streak: 0,
-        lastActiveDate: '',
-        targetMajor: '',
-        subjects: [],
-        onboardingComplete: false,
-        createdAt: new Date().toISOString(),
-      };
-      await setDoc(doc(db, 'users', cred.user.uid), profile);
+      await createInitialUserDocuments(createDefaultProfile(cred.user, name));
       navigate('/onboarding');
-    } catch (err: any) {
-      setError(ERRORS[err.code] || 'Terjadi kesalahan. Coba lagi.');
-    } finally {
+    } catch (err) {
+      console.error(err);
+
+      if (createdUser && err instanceof FirebaseError && !err.code.startsWith('auth/')) {
+        try {
+          await createdUser.delete();
+        } catch (deleteErr) {
+          console.error('Failed to roll back auth user after profile setup error.', deleteErr);
+        }
+      }
+
+      setError(getAuthErrorMessage(err));
+    }
+    finally {
       setLoading(false);
     }
   }

@@ -113,7 +113,12 @@ export default function Dashboard() {
         </div>
 
         {/* Stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3,minmax(0,1fr))',
+          gap: '14px',
+          marginTop: '-8px'
+        }}>
           <StatCard label="Streak aktif" value={`${userProfile?.streak ?? 0} hari`} icon={Zap} color="#EF9F27" bg="#FAEEDA" />
           <StatCard label="Total XP" value={`${userProfile?.xp ?? 0}`} icon={TrendingUp} color="#7F77DD" bg="#EEEDFE" />
           <StatCard label="Level saat ini" value={`${userProfile?.level ?? 1}`} icon={Trophy} color="#1D9E75" bg="#E1F5EE" />
@@ -123,7 +128,17 @@ export default function Dashboard() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
 
           {/* Daily quest card */}
-          <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1px solid #EDE9FE' }}>
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '16px',
+              padding: '20px',
+              border: '1px solid #EDE9FE',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px'
+            }}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
               <div style={{ fontSize: '15px', fontWeight: '700', color: '#26215C' }}>Daily Quest</div>
               <span style={{
@@ -131,7 +146,7 @@ export default function Dashboard() {
                 fontWeight: '600', padding: '3px 10px', borderRadius: '99px',
               }}>Tersedia</span>
             </div>
-            <div style={{ fontSize: '13px', color: '#888780', marginBottom: '10px' }}>
+            <div style={{ fontSize: '13px', color: '#888780'}}>
               10 soal · ~15 menit · Adaptif
             </div>
             <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', flexWrap: 'wrap' }}>
@@ -188,7 +203,7 @@ export default function Dashboard() {
                 );
               })
             )}
-            <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px' }}>
+            <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px'}}>
               Data akan muncul setelah kamu selesai quest pertama
             </div>
           </div>

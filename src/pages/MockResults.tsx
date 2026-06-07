@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -17,13 +17,18 @@ export default function MockResults() {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser } = useAuth();
-  const [saved, setSaved] = useState(false);
+  const savedRef = useRef(false);
 
   const state = location.state as MockResultState | null;
 
   useEffect(() => {
-    if (!state || !currentUser || saved) return;
-    setSaved(true);
+    if (!state) navigate('/mock', { replace: true });
+  }, [navigate, state]);
+
+  useEffect(() => {
+    if (!state || !currentUser || savedRef.current) return;
+    savedRef.current = true;
+
     async function save() {
       if (!state || !currentUser) return;
       const correctCount = state.questions.filter((q, i) => state.answers[i] === q.correctIndex).length;
@@ -40,10 +45,10 @@ export default function MockResults() {
         });
       } catch (err) { console.error(err); }
     }
-    save();
+    void save();
   }, [state, currentUser]);
 
-  if (!state) { navigate('/mock'); return null; }
+  if (!state) return null;
 
   const { config, questions, answers, timeTaken } = state;
   const correctCount = questions.filter((q, i) => answers[i] === q.correctIndex).length;

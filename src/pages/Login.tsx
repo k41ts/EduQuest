@@ -36,7 +36,15 @@ export default function Login() {
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       const snap = await getDoc(doc(db, 'users', cred.user.uid));
-      navigate(snap.data()?.onboardingComplete ? '/dashboard' : '/onboarding');
+
+      const userData = snap.data();
+      if (userData?.role === 'admin') {
+        console.log('NAVIGATING TO ADMIN');
+        navigate('/admin');
+      } else {
+        console.log('NAVIGATING TO DASHBOARD');
+        navigate(userData?.onboardingComplete ? '/dashboard' : '/onboarding');
+}
     } catch (err: any) {
       setError(ERRORS[err.code] || 'Terjadi kesalahan. Coba lagi.');
     } finally {
