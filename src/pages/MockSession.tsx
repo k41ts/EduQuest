@@ -1,13 +1,13 @@
-<<<<<<< Updated upstream
-import { useState, useEffect } from 'react';
-=======
 import { useCallback, useState, useEffect, useRef } from 'react';
->>>>>>> Stashed changes
+=======
+import { useCallback, useState, useEffect } from 'react';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { fetchQuestions, getRandomQuestions } from '../utils/questUtils';
 import type { Question } from '../types';
 import { Clock, ChevronLeft, ChevronRight, AlertCircle, BookOpen, Brain, Calculator } from 'lucide-react';
+import { updateMockStats } from '../utils/statsUtils';
 
 interface MockConfig {
   id: string;
@@ -52,15 +52,15 @@ export default function MockSession() {
       }
     }
     load();
-<<<<<<< Updated upstream
-  }, []);
-=======
   }, [config, navigate]);
 
   const handleSubmit = useCallback(async () => {
     if (submittedRef.current) return;
     submittedRef.current = true;
 
+  }, [config, navigate]);
+
+  const handleSubmit = useCallback(async () => {
     const timeTaken =
       (config?.durationMinutes ?? 0) * 60 - timeLeft;
 
@@ -79,30 +79,18 @@ export default function MockSession() {
       },
     });
   }, [answers, config, navigate, questions, timeLeft]);
->>>>>>> Stashed changes
 
   useEffect(() => {
     if (loading || questions.length === 0) return;
     if (timeLeft <= 0) { handleSubmit(); return; }
     const t = setTimeout(() => setTimeLeft(t => t - 1), 1000);
     return () => clearTimeout(t);
-  }, [timeLeft, loading, questions]);
+  }, [handleSubmit, loading, questions.length, timeLeft]);
 
   function handleSelect(i: number) {
     const updated = [...answers];
     updated[index] = i;
     setAnswers(updated);
-  }
-
-  function handleSubmit() {
-    navigate('/mock/results', {
-      state: {
-        config,
-        questions,
-        answers,
-        timeTaken: (config?.durationMinutes ?? 0) * 60 - timeLeft,
-      },
-    });
   }
 
   if (!config) return null;

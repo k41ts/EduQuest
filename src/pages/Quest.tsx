@@ -38,16 +38,24 @@ export default function Quest() {
     async function loadQuestions() {
       try {
         setLoading(true);
+
         const all = await fetchQuestions();
+        console.log("all questions:", all);
+
+        console.log("subjects:", userProfile?.subjects);
+
         const qs = getRandomQuestions(all, userProfile?.subjects ?? [], 10);
+        console.log("selected questions:", qs);
+
         setQuestions(qs);
         setAnswers(new Array(qs.length).fill(null));
-<<<<<<< Updated upstream
-=======
       } catch (err) {
         console.error(err);
         setError('Gagal memuat soal. Periksa koneksi lalu coba lagi.');
->>>>>>> Stashed changes
+=======
+      } catch (err) {
+        console.error(err);
+
       } finally {
         setLoading(false);
       }
@@ -57,16 +65,23 @@ export default function Quest() {
 
   useEffect(() => {
     if (submitted || questions.length === 0) return;
-    if (timeLeft <= 0) {
-      const newAnswers = [...answers];
-      newAnswers[index] = null;
-      setAnswers(newAnswers);
-      setSubmitted(true);
-      return;
-    }
-    const t = setTimeout(() => setTimeLeft(t => t - 1), 1000);
+    const t = setTimeout(() => {
+      setTimeLeft(currentTime => {
+        if (currentTime <= 1) {
+          setAnswers(currentAnswers => {
+            const updatedAnswers = [...currentAnswers];
+            updatedAnswers[index] = null;
+            return updatedAnswers;
+          });
+          setSubmitted(true);
+          return 0;
+        }
+
+        return currentTime - 1;
+      });
+    }, 1000);
     return () => clearTimeout(t);
-  }, [timeLeft, submitted, questions]);
+  }, [index, submitted, questions.length, timeLeft]);
 
   function handleSubmit() {
     const newAnswers = [...answers];

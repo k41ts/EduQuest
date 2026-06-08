@@ -37,7 +37,6 @@ export default function Profile() {
   const [newName, setNewName] = useState(userProfile?.name ?? '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [saveError, setSaveError] = useState('');
 
   const xp = userProfile?.xp ?? 0;
   const level = userProfile?.level ?? 1;
@@ -56,16 +55,12 @@ export default function Profile() {
   async function handleSaveName() {
     if (!currentUser || !newName.trim()) return;
     setSaving(true);
-    setSaveError('');
     try {
       await updateDoc(doc(db, 'users', currentUser.uid), { name: newName.trim() });
       await refreshProfile();
       setEditing(false);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.error(err);
-      setSaveError('Gagal menyimpan nama. Coba lagi.');
     } finally {
       setSaving(false);
     }
@@ -242,11 +237,6 @@ export default function Profile() {
                         {saving ? 'Menyimpan...' : 'Simpan'}
                       </button>
                     </div>
-                    {saveError && (
-                      <div style={{ color: '#FF6B6B', fontSize: '12px', fontWeight: '600', marginTop: '8px' }}>
-                        {saveError}
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
