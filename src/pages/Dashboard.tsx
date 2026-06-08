@@ -1,7 +1,17 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import { Zap, ClipboardList, Target, Trophy, TrendingUp, BookOpen, Brain, Calculator } from 'lucide-react';
+
+interface SubjectStat {
+  subject: string;
+  correct: number;
+  total: number;
+  accuracy: number;
+}
 
 const SUBJECT_META: Record<string, { color: string; bg: string; icon: typeof BookOpen }> = {
   TPS:        { color: '#7F77DD', bg: '#EEEDFE', icon: Brain },
@@ -34,6 +44,18 @@ function StatCard({ label, value, icon: Icon, color, bg }: {
 export default function Dashboard() {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
+  const [subjectStats, setSubjectStats] = useState<SubjectStat[]>([]);
+
+  useEffect(() => {
+    if (!userProfile?.uid) return;
+    (async () => {
+      const statsSnap = await getDoc(doc(db, 'userStats', userProfile.uid));
+      if (statsSnap.exists()) {
+        const data = statsSnap.data();
+        setSubjectStats(data.subjects ?? []);
+      }
+    })();
+  }, [userProfile?.uid]);
 
   const level = userProfile?.level ?? 1;
   const xp = userProfile?.xp ?? 0;
@@ -184,6 +206,9 @@ export default function Dashboard() {
               (userProfile?.subjects ?? []).map(s => {
                 const meta = SUBJECT_META[s] ?? { color: '#7F77DD', bg: '#EEEDFE', icon: BookOpen };
                 const Icon = meta.icon;
+                const stat = subjectStats.find(st => st.subject === s);
+                const accuracy = stat ? stat.accuracy : null;
+                const hasData = accuracy !== null;
                 return (
                   <div key={s} style={{ marginBottom: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px' }}>
@@ -194,18 +219,31 @@ export default function Dashboard() {
                         <Icon size={14} color={meta.color} />
                       </div>
                       <span style={{ fontSize: '13px', fontWeight: '600', color: '#26215C', flex: 1 }}>{s}</span>
-                      <span style={{ fontSize: '12px', fontWeight: '600', color: meta.color }}>--%</span>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: meta.color }}>
+                        {hasData ? `${accuracy}%` : '--%'}
+                      </span>
                     </div>
                     <div style={{ height: '7px', background: meta.bg, borderRadius: '99px' }}>
-                      <div style={{ height: '100%', borderRadius: '99px', background: meta.color, width: '0%' }} />
+                      <div style={{
+                        height: '100%', borderRadius: '99px', background: meta.color,
+                        width: hasData ? `${accuracy}%` : '0%',
+                        transition: 'width 0.6s ease',
+                      }} />
                     </div>
+                    {hasData && stat && (
+                      <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px' }}>
+                        {stat.correct}/{stat.total} jawaban benar
+                      </div>
+                    )}
                   </div>
                 );
               })
             )}
-            <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px'}}>
-              Data akan muncul setelah kamu selesai quest pertama
-            </div>
+            {subjectStats.length === 0 && (userProfile?.subjects ?? []).length > 0 && (
+              <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px'}}>
+                Data akan muncul setelah kamu selesai quest pertama
+              </div>
+            )}
           </div>
         </div>
       </div>
