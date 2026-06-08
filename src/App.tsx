@@ -9,7 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Quest from './pages/Quest';
 import QuestResults from './pages/QuestResults';
 import Seed from './pages/seed';
-import Mock from './pages/mock';
+import Mock from './pages/Mock';
 import MockSession from './pages/MockSession';
 import MockResults from './pages/MockResults';
 
