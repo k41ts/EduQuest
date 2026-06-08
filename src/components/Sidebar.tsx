@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, Zap, ClipboardList, Trophy,
-  BarChart2, User, Settings, BookOpen, LogOut,
+  BarChart2, User, BookOpen, LogOut,
 } from 'lucide-react';
 
 const NAV = [
@@ -17,7 +17,6 @@ const NAV = [
 
 const BOTTOM_NAV = [
   { path: '/profile', label: 'Profil', icon: User },
-  { path: '/settings', label: 'Pengaturan', icon: Settings },
 ];
 
 export default function Sidebar() {
