@@ -4,7 +4,7 @@
 
 EduQuest membantu siswa mempersiapkan UTBK (Ujian Tulis Berbasis Komputer) melalui latihan soal harian, simulasi ujian, dan sistem XP & level yang membuat belajar jadi lebih seru.
 
-> 🌐 **Live Demo**: [Deployed on Vercel](https://eduquest.vercel.app)
+> 🌐 **Live Demo**: [Deployed on Vercel](https://eduquest-binus.vercel.app)
 
 ---
 
