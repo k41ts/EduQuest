@@ -16,7 +16,6 @@ import {
   adminTitle,
   adminToolbar,
 } from '../components/adminUi';
-import type { Question } from '../types';
 import { QuestionEditorFields, defaultQuestionDraft, type QuestionDraft } from '../components/QuestionEditorFields';
 
 type QuestionDifficulty = 'all' | 'easy' | 'medium' | 'hard';

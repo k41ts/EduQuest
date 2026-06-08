@@ -7,6 +7,18 @@ import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Quest from './pages/Quest';
 import QuestResults from './pages/QuestResults';
+<<<<<<< Updated upstream
+=======
+import Seed from './pages/seed';
+import Mock from './pages/Mock';
+import MockSession from './pages/MockSession';
+import MockResults from './pages/MockResults';
+
+// NEW PAGES
+import Leaderboard from './pages/Leaderboard';
+import Statistics from './pages/Stats';
+import Profile from './pages/Profile';
+>>>>>>> Stashed changes
 import AdminDashboard from './pages/AdminDashboard';
 import AdminQuestions from './pages/AdminQuestions';
 import AdminQuestionCreate from './pages/AdminQuestionCreate';

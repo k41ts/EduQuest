@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import { useState, useEffect } from 'react';
+=======
+import { useCallback, useState, useEffect, useRef } from 'react';
+>>>>>>> Stashed changes
 import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { fetchQuestions, getRandomQuestions } from '../utils/questUtils';
@@ -30,19 +34,52 @@ export default function MockSession() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
+  const submittedRef = useRef(false);
 
   useEffect(() => {
     if (!config) { navigate('/mock'); return; }
     async function load() {
-      const all = await fetchQuestions();
-      const qs = getRandomQuestions(all, config!.subjects, config!.questionCount);
-      setQuestions(qs);
-      setAnswers(new Array(qs.length).fill(null));
-      setTimeLeft(config!.durationMinutes * 60);
-      setLoading(false);
+      try {
+        const all = await fetchQuestions();
+        const qs = getRandomQuestions(all, config!.subjects, config!.questionCount);
+        setQuestions(qs);
+        setAnswers(new Array(qs.length).fill(null));
+        setTimeLeft(config!.durationMinutes * 60);
+        setLoading(false);
+      } catch (err) {
+        console.error('Failed to load mock questions:', err);
+        navigate('/mock');
+      }
     }
     load();
+<<<<<<< Updated upstream
   }, []);
+=======
+  }, [config, navigate]);
+
+  const handleSubmit = useCallback(async () => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+
+    const timeTaken =
+      (config?.durationMinutes ?? 0) * 60 - timeLeft;
+
+    await updateMockStats({
+      questions,
+      answers,
+      timeTaken,
+    });
+
+    navigate('/mock/results', {
+      state: {
+        config,
+        questions,
+        answers,
+        timeTaken,
+      },
+    });
+  }, [answers, config, navigate, questions, timeLeft]);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     if (loading || questions.length === 0) return;

@@ -32,6 +32,7 @@ export default function Quest() {
   const [timeLeft, setTimeLeft] = useState(TIMER);
   const [xpEarned, setXpEarned] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     async function loadQuestions() {
@@ -41,6 +42,12 @@ export default function Quest() {
         const qs = getRandomQuestions(all, userProfile?.subjects ?? [], 10);
         setQuestions(qs);
         setAnswers(new Array(qs.length).fill(null));
+<<<<<<< Updated upstream
+=======
+      } catch (err) {
+        console.error(err);
+        setError('Gagal memuat soal. Periksa koneksi lalu coba lagi.');
+>>>>>>> Stashed changes
       } finally {
         setLoading(false);
       }
@@ -81,6 +88,31 @@ export default function Quest() {
     setSelected(null);
     setSubmitted(false);
     setTimeLeft(TIMER);
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', height: '100%', gap: '12px', padding: '24px',
+        }}>
+          <div style={{ fontSize: '14px', fontWeight: '600', color: '#D85A30', marginBottom: '8px' }}>
+            {error}
+          </div>
+          <button
+            onClick={() => { setError(''); setLoading(true); }}
+            style={{
+              padding: '10px 20px', borderRadius: '12px', border: 'none',
+              background: '#7F77DD', color: 'white', fontSize: '13px',
+              fontWeight: '700', cursor: 'pointer', fontFamily: 'Plus Jakarta Sans, sans-serif',
+            }}
+          >
+            Coba lagi
+          </button>
+        </div>
+      </Layout>
+    );
   }
 
   if (loading || questions.length === 0) {

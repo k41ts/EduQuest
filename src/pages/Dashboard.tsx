@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { Zap, ClipboardList, Target, Trophy, TrendingUp, BookOpen, Brain, Calculator } from 'lucide-react';
 
 const SUBJECT_META: Record<string, { color: string; bg: string; icon: typeof BookOpen }> = {
@@ -32,8 +35,25 @@ function StatCard({ label, value, icon: Icon, color, bg }: {
 }
 
 export default function Dashboard() {
-  const { userProfile } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const navigate = useNavigate();
+  const [subjectStats, setSubjectStats] = useState<{ subject: string; accuracy: number; total: number }[]>([]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    async function fetchStats() {
+      try {
+        const snap = await getDoc(doc(db, 'userStats', currentUser!.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          setSubjectStats(data.subjects ?? []);
+        }
+      } catch (err) {
+        console.error('Failed to load subject stats:', err);
+      }
+    }
+    fetchStats();
+  }, [currentUser]);
 
   const level = userProfile?.level ?? 1;
   const xp = userProfile?.xp ?? 0;
@@ -169,6 +189,9 @@ export default function Dashboard() {
               (userProfile?.subjects ?? []).map(s => {
                 const meta = SUBJECT_META[s] ?? { color: '#7F77DD', bg: '#EEEDFE', icon: BookOpen };
                 const Icon = meta.icon;
+                const stat = subjectStats.find(st => st.subject === s);
+                const accuracy = stat?.accuracy ?? 0;
+                const total = stat?.total ?? 0;
                 return (
                   <div key={s} style={{ marginBottom: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px' }}>
@@ -179,18 +202,28 @@ export default function Dashboard() {
                         <Icon size={14} color={meta.color} />
                       </div>
                       <span style={{ fontSize: '13px', fontWeight: '600', color: '#26215C', flex: 1 }}>{s}</span>
-                      <span style={{ fontSize: '12px', fontWeight: '600', color: meta.color }}>--%</span>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: meta.color }}>
+                        {total > 0 ? `${accuracy}%` : '--%'}
+                      </span>
                     </div>
                     <div style={{ height: '7px', background: meta.bg, borderRadius: '99px' }}>
-                      <div style={{ height: '100%', borderRadius: '99px', background: meta.color, width: '0%' }} />
+                      <div style={{ height: '100%', borderRadius: '99px', background: meta.color, width: `${accuracy}%`, transition: 'width 0.6s ease' }} />
                     </div>
                   </div>
                 );
               })
             )}
+<<<<<<< Updated upstream
             <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px' }}>
               Data akan muncul setelah kamu selesai quest pertama
             </div>
+=======
+            {subjectStats.length === 0 && (userProfile?.subjects ?? []).length > 0 && (
+              <div style={{ fontSize: '11px', color: '#B4B2A9', marginTop: '4px'}}>
+                Data akan muncul setelah kamu selesai quest pertama
+              </div>
+            )}
+>>>>>>> Stashed changes
           </div>
         </div>
       </div>
