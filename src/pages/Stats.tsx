@@ -507,9 +507,6 @@ export default function Stats() {
                 <CheckCircle size={16} />
                 {stats ? `Updated ${formatDate(stats.generatedAt)}` : 'Menunggu aktivitas'}
               </div>
-              <div style={{ fontSize: '12px', lineHeight: 1.55, color: COLORS.muted, marginTop: '8px' }}>
-                Source collections: `userStats` and `userActivity`.
-              </div>
             </section>
           </aside>
 
@@ -527,7 +524,7 @@ export default function Stats() {
                   <div>
                     <div style={{ fontSize: '16px', fontWeight: '700', color: COLORS.ink }}>7-day activity rhythm</div>
                     <div style={{ fontSize: '12px', color: COLORS.muted, marginTop: '4px' }}>
-                      XP, quest, dan mock test dari collection userActivity
+                      XP, quest, dan mock test
                     </div>
                   </div>
                   <LineChart size={22} color={COLORS.primary} />
