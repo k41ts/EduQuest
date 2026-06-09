@@ -17,7 +17,7 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow read: if signedIn();
       allow create: if signedIn() && request.auth.uid == userId;
       allow update: if signedIn() && (request.auth.uid == userId || isAdmin());
       allow delete: if isAdmin();
@@ -33,7 +33,8 @@ service cloud.firestore {
     }
 
     match /userActivity/{docId} {
-      allow read, write: if signedIn() && docId.matches(request.auth.uid + '_.*');
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow write: if signedIn() && request.resource.data.userId == request.auth.uid;
     }
 
     match /sessions/{sessionId} {

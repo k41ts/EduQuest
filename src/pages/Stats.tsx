@@ -256,21 +256,32 @@ export default function Stats() {
     return () => { cancelled = true; };
   }, [currentUser, reloadKey]);
 
-  const fallbackProgress = getXpProgress(userProfile?.level ?? 1, userProfile?.xp ?? 0);
-  const profileStats: UserStatsDoc = stats ?? {
-    userId: currentUser?.uid ?? '',
-    generatedAt: '',
-    totalXp: userProfile?.xp ?? 0,
-    level: userProfile?.level ?? 1,
-    streak: userProfile?.streak ?? 0,
-    targetMajor: userProfile?.targetMajor ?? '',
-    activeSubjects: userProfile?.subjects ?? [],
-    lastActiveDate: userProfile?.lastActiveDate ?? '',
-    xpProgress: fallbackProgress,
-    dailyQuest: { sessions: 0, totalXp: 0, totalQuestions: 0, correct: 0, accuracy: 0, bestSessionXp: 0 },
-    mockTest: { sessions: 0, averageScore: 0, bestScore: 0, averageTime: 0, lastScore: 0 },
-    subjects: [],
-    focusAreas: [],
+  const freshXp = userProfile?.xp ?? 0;
+  const freshLevel = userProfile?.level ?? 1;
+  const freshStreak = userProfile?.streak ?? 0;
+  const freshProgress = getXpProgress(freshLevel, freshXp);
+
+  const profileStats: UserStatsDoc = {
+    ...(stats ?? {
+      userId: currentUser?.uid ?? '',
+      generatedAt: '',
+      totalXp: freshXp,
+      level: freshLevel,
+      streak: freshStreak,
+      targetMajor: userProfile?.targetMajor ?? '',
+      activeSubjects: userProfile?.subjects ?? [],
+      lastActiveDate: userProfile?.lastActiveDate ?? '',
+      xpProgress: freshProgress,
+      dailyQuest: { sessions: 0, totalXp: 0, totalQuestions: 0, correct: 0, accuracy: 0, bestSessionXp: 0 },
+      mockTest: { sessions: 0, averageScore: 0, bestScore: 0, averageTime: 0, lastScore: 0 },
+      subjects: [],
+      focusAreas: [],
+    }),
+    // Always use fresh values from users collection (source of truth)
+    totalXp: freshXp,
+    level: freshLevel,
+    streak: freshStreak,
+    xpProgress: freshProgress,
   };
 
   const maxActivityXp = Math.max(...activity.map(item => item.xp), 1);
