@@ -133,6 +133,7 @@ type UserAggregate = {
   totalXp: number;
   accuracy: number;
   totalAnswered: number;
+  totalCorrect: number; // ← added for correct accuracy calculation
 };
 
 export default function AdminDashboard() {
@@ -169,30 +170,39 @@ export default function AdminDashboard() {
     load();
   }, []);
 
-  // aggregate users
+  // ─── aggregate users (fixed accuracy logic) ──────────────────────────────
   const aggregates: UserAggregate[] = (() => {
     const map = new Map<string, UserAggregate>();
+
     sessions.forEach(s => {
       const cur = map.get(s.userId) ?? {
-        userId: s.userId, name: s.userName || 'Unknown',
+        userId: s.userId,
+        name: s.userName || 'Unknown',
         email: s.userEmail || '-',
-        sessions: 0, totalXp: 0, accuracy: 0, totalAnswered: 0,
+        sessions: 0,
+        totalXp: 0,
+        accuracy: 0,
+        totalAnswered: 0,
+        totalCorrect: 0, // ← accumulate raw correct count
       };
-      cur.sessions += 1;
-      cur.totalXp   += s.xpEarned ?? 0;
-      const corr = s.correctCount ?? 0;
-      const tot  = s.totalCount ?? 0;
-      cur.totalAnswered += tot;
-      cur.accuracy = cur.totalAnswered > 0
-        ? Math.round(((cur.accuracy * (cur.totalAnswered - tot) + corr) / cur.totalAnswered) * 100) / 100
-        : 0;
-      if (cur.name === 'Unknown' && s.userName) cur.name = s.userName;
-      if (cur.email === '-'     && s.userEmail) cur.email = s.userEmail;
+
+      cur.sessions      += 1;
+      cur.totalXp       += s.xpEarned ?? 0;
+      cur.totalAnswered += s.totalCount ?? 0;
+      cur.totalCorrect  += s.correctCount ?? 0; // ← sum raw, don't average mid-loop
+
+      if (cur.name  === 'Unknown' && s.userName)  cur.name  = s.userName;
+      if (cur.email === '-'       && s.userEmail) cur.email = s.userEmail;
+
       map.set(s.userId, cur);
     });
+
+    // compute accuracy once after all sessions are summed — same formula as AdminStats
     return Array.from(map.values()).map(u => ({
       ...u,
-      accuracy: u.totalAnswered > 0 ? Math.round(u.accuracy) : 0,
+      accuracy: u.totalAnswered > 0
+        ? Math.round((u.totalCorrect / u.totalAnswered) * 100)
+        : 0,
     }));
   })();
 
