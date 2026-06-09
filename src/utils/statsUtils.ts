@@ -254,12 +254,16 @@ async function updateDailyActivity({
   mockSessions: number;
 }) {
   const activityRef = doc(db, 'userActivity', `${uid}_${date}`);
-  const activitySnap = await getDoc(activityRef);
-  const activity = normalizeActivity(
-    uid,
-    date,
-    activitySnap.exists() ? activitySnap.data() as Partial<ActivityDoc> : undefined
-  );
+  let existingData: Partial<ActivityDoc> | undefined;
+  try {
+    const activitySnap = await getDoc(activityRef);
+    if (activitySnap.exists()) {
+      existingData = activitySnap.data() as Partial<ActivityDoc>;
+    }
+  } catch {
+    // Document might not exist yet, use defaults
+  }
+  const activity = normalizeActivity(uid, date, existingData);
 
   const nextCorrect = activity.correct + correct;
   const nextTotal = activity.total + total;

@@ -33,7 +33,7 @@ service cloud.firestore {
     }
 
     match /userActivity/{docId} {
-      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow read: if signedIn();
       allow write: if signedIn() && request.resource.data.userId == request.auth.uid;
     }
 
