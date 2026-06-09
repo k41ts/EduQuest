@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';
