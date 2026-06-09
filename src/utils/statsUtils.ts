@@ -336,6 +336,7 @@ export async function updateMockStats({
       generatedAt: new Date().toISOString(),
       totalXp: newXp,
       level: newLevel,
+      streak: newStreak,
       lastActiveDate: today,
       xpProgress: getXpProgress(newLevel, newXp),
       subjects,

@@ -28,6 +28,24 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /userStats/{docId} {
+      allow read, write: if signedIn() && request.auth.uid == docId;
+    }
+
+    match /userActivity/{docId} {
+      allow read, write: if signedIn() && docId.matches(request.auth.uid + '_.*');
+    }
+
+    match /sessions/{sessionId} {
+      allow create: if signedIn();
+      allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /mockSessions/{sessionId} {
+      allow create: if signedIn();
+      allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
