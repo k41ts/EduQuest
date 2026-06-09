@@ -16,7 +16,7 @@ interface MockResultState {
 export default function MockResults() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser } = useAuth();
+  const { currentUser, refreshProfile } = useAuth();
   const savedRef = useRef(false);
 
   const state = location.state as MockResultState | null;
@@ -43,10 +43,11 @@ export default function MockResults() {
           score: Math.round((correctCount / state.questions.length) * 100),
           timeTaken: state.timeTaken,
         });
+        await refreshProfile();
       } catch (err) { console.error(err); }
     }
     void save();
-  }, [state, currentUser]);
+  }, [state, currentUser, refreshProfile]);
 
   if (!state) return null;
 

@@ -6,6 +6,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import type { Question, UserProfile } from '../types';
+import { calculateStreak } from './questUtils';
 
 interface UpdateMockStatsParams {
   questions: Question[];
@@ -300,10 +301,12 @@ export async function updateMockStats({
   const currentXp = userData?.xp ?? 0;
   const newXp = currentXp + xpEarned;
   const newLevel = calculateLevel(newXp);
+  const newStreak = calculateStreak(userData?.lastActiveDate ?? '', userData?.streak ?? 0);
 
   await updateDoc(userRef, {
     xp: newXp,
     level: newLevel,
+    streak: newStreak,
     lastActiveDate: today,
   });
 
